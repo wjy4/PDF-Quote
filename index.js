@@ -211,10 +211,12 @@ app.post("/generate-pdf", async (req, res) => {
   `;
 
   try {
+    const puppeteer = require("puppeteer");
+
+    // 使用 puppeteer 自带的 Chromium
     const browser = await puppeteer.launch({
-      args: chromium.args,
-      executablePath: await chromium.executablePath,
-      headless: chromium.headless,
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
     const page = await browser.newPage();
