@@ -13,6 +13,7 @@ const upload = multer();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
+console.log("✅ App started! Puppeteer version:", require("puppeteer").version);
 
 const SERVICES = {
   self: {
