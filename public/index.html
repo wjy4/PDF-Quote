@@ -214,6 +214,50 @@
         .addEventListener("change", renderServices);
       renderServices();
 
+      //   document
+      //     .getElementById("quoteForm")
+      //     .addEventListener("submit", async (e) => {
+      //       e.preventDefault();
+
+      //       const lang = document.getElementById("lang").value;
+      //       const clientType = document.getElementById("clientType").value;
+      //       const packageType = document.getElementById("packageType").value;
+
+      //       const services = [
+      //         ...document.querySelectorAll("input[type=checkbox]:checked"),
+      //       ].map((el) => el.value);
+
+      //       const payload = {
+      //         lang,
+      //         clientType,
+      //         packageType,
+      //         services,
+      //         fromDate: {
+      //           day: document.getElementById("fromDay").value,
+      //           month: document.getElementById("fromMonth").value,
+      //           year: document.getElementById("fromYear").value,
+      //         },
+      //         toDate: {
+      //           day: document.getElementById("toDay").value,
+      //           month: document.getElementById("toMonth").value,
+      //           year: document.getElementById("toYear").value,
+      //         },
+      //       };
+
+      //       const res = await fetch("/generate-pdf", {
+      //         method: "POST",
+      //         headers: { "Content-Type": "application/json" },
+      //         body: JSON.stringify(payload),
+      //       });
+
+      //       if (!res.ok) return alert("生成失败");
+      //       const blob = await res.blob();
+      //       const url = URL.createObjectURL(blob);
+      //       const a = document.createElement("a");
+      //       a.href = url;
+      //       a.download = "报价单.pdf";
+      //       a.click();
+      //     });
       document
         .getElementById("quoteForm")
         .addEventListener("submit", async (e) => {
@@ -244,19 +288,27 @@
             },
           };
 
-          const res = await fetch("/generate-pdf", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
+          const BASE_URL = window.location.origin;
 
-          if (!res.ok) return alert("生成失败");
-          const blob = await res.blob();
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "报价单.pdf";
-          a.click();
+          try {
+            const res = await fetch(`${BASE_URL}/generate-pdf`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+
+            if (!res.ok) return alert("生成失败");
+
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "报价单.pdf";
+            a.click();
+          } catch (err) {
+            alert("请求失败，请检查网络或服务是否正常");
+            console.error(err);
+          }
         });
     </script>
   </body>
