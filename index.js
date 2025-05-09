@@ -231,3 +231,6 @@ app.post("/generate-pdf", async (req, res) => {
 app.listen(3000, () => {
   console.log("🚀 Server running at http://localhost:3000");
 });
+app.get("/ping", (req, res) => {
+  res.send("pong");
+});
