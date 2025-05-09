@@ -1,12 +1,11 @@
 const express = require("express");
 const multer = require("multer");
 const cors = require("cors");
-const bodyParser = require("body-parser");
+const pdfParse = require("pdf-parse");
 const path = require("path");
+const puppeteer = require("puppeteer");
+const bodyParser = require("body-parser");
 const fs = require("fs");
-
-const puppeteer = require("puppeteer-core");
-const chromium = require("chrome-aws-lambda");
 
 const app = express();
 const upload = multer();
@@ -14,10 +13,8 @@ const upload = multer();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
+console.log("✅ App started! Puppeteer version:", require("puppeteer").version);
 
-console.log("✅ App started!");
-
-// 服务配置
 const SERVICES = {
   self: {
     zh: {
@@ -211,11 +208,8 @@ app.post("/generate-pdf", async (req, res) => {
   `;
 
   try {
-    const puppeteer = require("puppeteer");
-
-    // 使用 puppeteer 自带的 Chromium
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: "new",
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
@@ -235,19 +229,9 @@ app.post("/generate-pdf", async (req, res) => {
   }
 });
 
+app.listen(3000, () => {
+  console.log("🚀 Server running at http://localhost:3000");
+});
 app.get("/ping", (req, res) => {
   res.send("pong");
-});
-
-app.get("/puppeteer-test", async (req, res) => {
-  try {
-    const path = await chromium.executablePath;
-    res.json({ chromiumExecutable: path });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
-});
-
-app.listen(process.env.PORT || 3000, () => {
-  console.log("🚀 Server running at http://localhost:3000");
 });
